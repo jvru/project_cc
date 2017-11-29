@@ -19,11 +19,66 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 public class WordCount {
 
   public static class Text extends org.apache.hadoop.io.Text {
+    private static Simhash shInstance = new Simhash(new BinaryWordSeg());
+
     @Override
     public int hashCode() {
-//        try{Thread.sleep(1);}catch(Exception e){}
-//        return super.hashCode();
-return 0;
+//        return standard();
+//        return murmur();
+//        return md5();
+//        return sha256();
+//        return whirlpool();
+//        return crc32();
+//        return xor();
+        return simHash();
+    }
+
+    private int simHash() {
+        return (int) shInstance.simhash32(toString());
+    }
+
+    private int xor() {
+        return Xor.xor(toString().getBytes());
+    }
+
+    private int crc32() {
+        return Crc.crc32(toString().getBytes());
+    }
+
+    private int standard() {
+        return super.hashCode();
+    }
+
+    private int whirlpool() {
+        byte[] bytes = toString().getBytes();
+        bytes = Whirlpool.whirlpool(bytes, 0, bytes.length);
+        return first32Bit(bytes);  
+    }
+
+    private int murmur() {
+        return MurmurHash.hash32(toString());
+    }
+
+    private int sha256() {
+        String bytes = Sha.sha256(toString());
+        return first32Bit(bytes.getBytes());
+    }
+
+    private int md5() {
+        byte[] bytes = MD5.computeMD5(toString().getBytes());
+        return first32Bit(bytes);
+    }
+
+    private int first32Bit(byte[] bytes) {
+        int result = 0;
+        result = bytes[0];
+        result <<= 4;
+        result += bytes[1];
+        result <<= 4;
+        result += bytes[2];
+        result <<= 4;
+        result += bytes[3];
+        return result;
     }
   }
 
