@@ -6,7 +6,7 @@ export PATH=${JAVA_HOME}/bin:${PATH}
 export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
 
 #compile java code
-hadoop com.sun.tools.javac.Main 
+hadoop com.sun.tools.javac.Main [JAVA_CLASS_NAME].java
 jar cf [JAR_NAME].jar [JAVA_CLASS_NAME]*.class
 
 #execution

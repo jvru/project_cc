@@ -4,23 +4,35 @@ import java.util.StringTokenizer;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
+//import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
+//import org.apache.hadoop.mapreduce.Counter;
+//import org.apache.hadoop.mapreduce.Counters;
+//import org.apache.hadoop.mapreduce.CounterGroup;
+
 public class WordCount {
 
-  public static class TokenizerMapper
-       extends Mapper<Object, Text, Text, IntWritable>{
+  public static class Text extends org.apache.hadoop.io.Text {
+    @Override
+    public int hashCode() {
+//        try{Thread.sleep(1);}catch(Exception e){}
+//        return super.hashCode();
+return 0;
+    }
+  }
 
+  public static class TokenizerMapper extends Mapper<Object, org.apache.hadoop.io.Text, Text, IntWritable>{
+   
     private final static IntWritable one = new IntWritable(1);
     private Text word = new Text();
 
-    public void map(Object key, Text value, Context context
-                    ) throws IOException, InterruptedException {
+    public void map(Object key, org.apache.hadoop.io.Text value, Context context) throws IOException, InterruptedException {
       StringTokenizer itr = new StringTokenizer(value.toString());
       while (itr.hasMoreTokens()) {
         word.set(itr.nextToken());
@@ -29,13 +41,10 @@ public class WordCount {
     }
   }
 
-  public static class IntSumReducer
-       extends Reducer<Text,IntWritable,Text,IntWritable> {
+  public static class IntSumReducer extends Reducer<Text,IntWritable,Text,IntWritable> {
     private IntWritable result = new IntWritable();
 
-    public void reduce(Text key, Iterable<IntWritable> values,
-                       Context context
-                       ) throws IOException, InterruptedException {
+    public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
       int sum = 0;
       for (IntWritable val : values) {
         sum += val.get();
@@ -45,6 +54,16 @@ public class WordCount {
     }
   }
 
+//  public static class CustomPartitioner extends Partitioner<Text, IntWritable> {
+//    public int getPartition(Text key, IntWritable value, int numReduceTasks) {
+//      int hCode = 0;
+//
+//      if(numReduceTasks==0)
+//          return 0;
+//      return hCode % numReduceTasks;
+//    }
+//  }
+
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
     Job job = Job.getInstance(conf, "word count");
@@ -52,10 +71,31 @@ public class WordCount {
     job.setMapperClass(TokenizerMapper.class);
     job.setCombinerClass(IntSumReducer.class);
     job.setReducerClass(IntSumReducer.class);
+//    job.setPartitionerClass(CustomPartitioner.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(IntWritable.class);
+
+    job.setNumReduceTasks(5);
+
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
-    System.exit(job.waitForCompletion(true) ? 0 : 1);
+
+    long start = System.currentTimeMillis();
+    job.waitForCompletion(true);
+    long end = System.currentTimeMillis();
+
+    System.out.println("Job start: " + start);
+    System.out.println("Job end: " + end);
+    System.out.println("Duration: " + (end - start));
+
+/*    Counters counters = job.getCounters();
+
+    for (CounterGroup group : counters) {
+      System.out.println("* Counter Group: " + group.getDisplayName() + " (" + group.getName() + ")");
+      System.out.println("  number of counters in this group: " + group.size());
+      for (Counter counter : group) {
+        System.out.println("  - " + counter.getDisplayName() + ": " + counter.getName() + ": "+counter.getValue());
+      }
+    }*/
   }
 }
