@@ -12,77 +12,19 @@ import org.apache.hadoop.mapreduce.Partitioner;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-//import org.apache.hadoop.mapreduce.Counter;
-//import org.apache.hadoop.mapreduce.Counters;
-//import org.apache.hadoop.mapreduce.CounterGroup;
-
 public class WordCount {
 
   public static class Text extends org.apache.hadoop.io.Text {
-    private static Simhash shInstance = new Simhash(new BinaryWordSeg());
+    //TODO to select a has, modify the selectedHash variable
+    private static HashType selectedHash = HashType.NONE;
 
     @Override
     public int hashCode() {
-//        return standard();
-//        return murmur();
-//        return md5();
-//        return sha256();
-//        return whirlpool();
-//        return crc32();
-//        return xor();
-        return simHash();
-    }
-
-    private int simHash() {
-        return (int) shInstance.simhash32(toString());
-    }
-
-    private int xor() {
-        return Xor.xor(toString().getBytes());
-    }
-
-    private int crc32() {
-        return Crc.crc32(toString().getBytes());
-    }
-
-    private int standard() {
-        return super.hashCode();
-    }
-
-    private int whirlpool() {
-        byte[] bytes = toString().getBytes();
-        bytes = Whirlpool.whirlpool(bytes, 0, bytes.length);
-        return first32Bit(bytes);  
-    }
-
-    private int murmur() {
-        return MurmurHash.hash32(toString());
-    }
-
-    private int sha256() {
-        String bytes = Sha.sha256(toString());
-        return first32Bit(bytes.getBytes());
-    }
-
-    private int md5() {
-        byte[] bytes = MD5.computeMD5(toString().getBytes());
-        return first32Bit(bytes);
-    }
-
-    private int first32Bit(byte[] bytes) {
-        int result = 0;
-        result = bytes[0];
-        result <<= 4;
-        result += bytes[1];
-        result <<= 4;
-        result += bytes[2];
-        result <<= 4;
-        result += bytes[3];
-        return result;
+        return HashCode.getHash(toString().getBytes(), selectedHash);
     }
   }
 
-  public static class TokenizerMapper extends Mapper<Object, org.apache.hadoop.io.Text, Text, IntWritable>{
+    public static class TokenizerMapper extends Mapper<Object, org.apache.hadoop.io.Text, Text, IntWritable>{
    
     private final static IntWritable one = new IntWritable(1);
     private Text word = new Text();
@@ -142,15 +84,5 @@ public class WordCount {
     System.out.println("Job start: " + start);
     System.out.println("Job end: " + end);
     System.out.println("Duration: " + (end - start));
-
-/*    Counters counters = job.getCounters();
-
-    for (CounterGroup group : counters) {
-      System.out.println("* Counter Group: " + group.getDisplayName() + " (" + group.getName() + ")");
-      System.out.println("  number of counters in this group: " + group.size());
-      for (Counter counter : group) {
-        System.out.println("  - " + counter.getDisplayName() + ": " + counter.getName() + ": "+counter.getValue());
-      }
-    }*/
   }
 }
