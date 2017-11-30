@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-package org.apache.spark.examples;
-
 import scala.Tuple2;
 
 import org.apache.spark.api.java.JavaPairRDD;
@@ -27,8 +25,38 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import java.io.Serializable;
+
 public final class JavaWordCount {
   private static final Pattern SPACE = Pattern.compile(" ");
+
+  private static class MyString implements Serializable {
+    //TODO to select a has, modify the selectedHash variable
+    private static final HashType selectedHash = HashType.MD5;
+    String s;    
+
+    public MyString(String s) {
+      this.s = s;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(!(other instanceof MyString))
+          return false;
+        return s.equals(((MyString)other).s);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCode.getHash(s.getBytes(), selectedHash);
+//        return s.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return s;
+    }
+  }
 
   public static void main(String[] args) throws Exception {
 
@@ -46,11 +74,12 @@ public final class JavaWordCount {
 
     JavaRDD<String> words = lines.flatMap(s -> Arrays.asList(SPACE.split(s)).iterator());
 
-    JavaPairRDD<String, Integer> ones = words.mapToPair(s -> new Tuple2<>(s, 1));
+    //JavaPairRDD<String, Integer> ones = words.mapToPair(s -> new Tuple2<>(s, 1));
+    JavaPairRDD<MyString, Integer> ones = words.mapToPair(s -> new Tuple2<>(new MyString(s), 1));
 
-    JavaPairRDD<String, Integer> counts = ones.reduceByKey((i1, i2) -> i1 + i2);
+    JavaPairRDD<MyString, Integer> counts = ones.reduceByKey((i1, i2) -> i1 + i2);
 
-    List<Tuple2<String, Integer>> output = counts.collect();
+    List<Tuple2<MyString, Integer>> output = counts.collect();
     for (Tuple2<?,?> tuple : output) {
       System.out.println(tuple._1() + ": " + tuple._2());
     }
