@@ -16,7 +16,7 @@ public class WordCount {
 
   public static class Text extends org.apache.hadoop.io.Text {
     //TODO to select a has, modify the selectedHash variable
-    private static HashType selectedHash = HashType.NONE;
+    private static final HashType selectedHash = HashType.NONE;
 
     @Override
     public int hashCode() {
