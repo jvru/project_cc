@@ -1,7 +1,25 @@
+################### Steps for building and execution ###########################
 #using spark 2.2.0
+
 #install maven
 sudo apt install maven
 
+#select hash function (in word count)
+in WordCount/src/main/java/JavaWordCount.java
+modify the selectedHash variable to the corresponding value of the HashType enum
+the possible values can be seen in the HashType.java file of the hashes folder
+
+#compile maven; generate .jar
+mvn clean package
+
+#submit the job from the job folder
+spark-submit --class [PACKAGE_NAME].[ARTIFACT_ID] ./target/[FILENAME_]SNAPSHOT.jar
+
+
+
+
+
+##################### Additional Info ############################
 #create a maven project
 mvn archetype:generate -DgroupId=[PACKAGE_NAME] -DartifactId=[ARTIFACT_ID]
 
@@ -39,9 +57,3 @@ ARTIFACT_ID could be: JavaSparkPi
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-#compile maven; generate .jar
-mvn clean package
-
-#submit the job from the job folder
-spark-submit --class [PACKAGE_NAME].[ARTIFACT_ID] ./target/[FILENAME_]SNAPSHOT.jar
