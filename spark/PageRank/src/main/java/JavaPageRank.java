@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-package org.apache.spark.examples;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -29,6 +27,8 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.sql.SparkSession;
+
+import java.io.Serializable;
 
 /**
  * Computes the PageRank of URLs from an input file. Input file should
@@ -49,6 +49,34 @@ import org.apache.spark.sql.SparkSession;
  */
 public final class JavaPageRank {
   private static final Pattern SPACES = Pattern.compile("\\s+");
+
+  private static class MyString implements Serializable {
+    //TODO to select a has, modify the selectedHash variable
+    private static final HashType selectedHash = HashType.MD5;
+    String s;    
+
+    public MyString(String s) {
+      this.s = s;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(!(other instanceof MyString))
+          return false;
+        return s.equals(((MyString)other).s);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCode.getHash(s.getBytes(), selectedHash);
+//        return s.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return s;
+    }
+  }
 
   static void showWarning() {
     String warning = "WARN: This is a naive implementation of PageRank " +
@@ -86,23 +114,23 @@ public final class JavaPageRank {
     JavaRDD<String> lines = spark.read().textFile(args[0]).javaRDD();
 
     // Loads all URLs from input file and initialize their neighbors.
-    JavaPairRDD<String, Iterable<String>> links = lines.mapToPair(s -> {
+    JavaPairRDD<MyString, Iterable<String>> links = lines.mapToPair(s -> {
       String[] parts = SPACES.split(s);
-      return new Tuple2<>(parts[0], parts[1]);
+      return new Tuple2<>(new MyString(parts[0]), parts[1]);
     }).distinct().groupByKey().cache();
 
     // Loads all URLs with other URL(s) link to from input file and initialize ranks of them to one.
-    JavaPairRDD<String, Double> ranks = links.mapValues(rs -> 1.0);
+    JavaPairRDD<MyString, Double> ranks = links.mapValues(rs -> 1.0);
 
     // Calculates and updates URL ranks continuously using PageRank algorithm.
     for (int current = 0; current < Integer.parseInt(args[1]); current++) {
       // Calculates URL contributions to the rank of other URLs.
-      JavaPairRDD<String, Double> contribs = links.join(ranks).values()
+      JavaPairRDD<MyString, Double> contribs = links.join(ranks).values()
         .flatMapToPair(s -> {
           int urlCount = Iterables.size(s._1());
-          List<Tuple2<String, Double>> results = new ArrayList<>();
+          List<Tuple2<MyString, Double>> results = new ArrayList<>();
           for (String n : s._1) {
-            results.add(new Tuple2<>(n, s._2() / urlCount));
+            results.add(new Tuple2<>(new MyString(n), s._2() / urlCount));
           }
           return results.iterator();
         });
@@ -112,7 +140,7 @@ public final class JavaPageRank {
     }
 
     // Collects all URL ranks and dump them to console.
-    List<Tuple2<String, Double>> output = ranks.collect();
+    List<Tuple2<MyString, Double>> output = ranks.collect();
     for (Tuple2<?,?> tuple : output) {
       System.out.println(tuple._1() + " has rank: " + tuple._2() + ".");
     }
