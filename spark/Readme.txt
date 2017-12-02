@@ -15,8 +15,9 @@ mvn clean package
 #submit the job from the job folder
 spark-submit --class [PACKAGE_NAME].[ARTIFACT_ID] ./target/[FILENAME_]SNAPSHOT.jar
 
-
-
+#submit job and specify input file directory
+spark-submit --class JavaWordCount ./target/WordCount-1.0-SNAPSHOT.jar [input directory in hdfs]
+[input directory in hdfs] can be: ./input/input (/user/hadoop/input/input)
 
 
 ##################### Additional Info ############################
