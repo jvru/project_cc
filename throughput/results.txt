@@ -1,0 +1,83 @@
+Bytes read: 119159324
+============
+Running Hash NONE
+avg: 0
+============
+Running Hash JENKINS
+avg: 105
+============
+Running Hash FLETCHER32
+avg: 326
+============
+Running Hash XX_HASH
+avg: 52
+============
+Running Hash ADLER32
+avg: 41
+============
+Running Hash XOR8
+avg: 32
+============
+Running Hash CRC32
+avg: 249
+============
+Running Hash MURMUR
+avg: 57
+============
+Running Hash WHIRLPOOL
+avg: 4175
+============
+Running Hash SHA256
+avg: 571
+============
+Running Hash MD5
+avg: 581
+============
+Running Hash HASH_CODE
+avg: 91
+
+
+Bytes read: 14222744
+============
+Running Hash NONE
+avg: 0
+============
+Running Hash JENKINS
+avg: 15
+============
+Running Hash FLETCHER32
+avg: 39
+============
+Running Hash BLAKE_2S
+avg: 2509
+============
+Running Hash XX_HASH
+avg: 8
+============
+Running Hash SIM_HASH
+avg: 8159
+============
+Running Hash ADLER32
+avg: 5
+============
+Running Hash XOR8
+avg: 4
+============
+Running Hash CRC32
+avg: 29
+============
+Running Hash MURMUR
+avg: 7
+============
+Running Hash WHIRLPOOL
+avg: 503
+============
+Running Hash SHA256
+avg: 71
+============
+Running Hash MD5
+avg: 72
+============
+Running Hash HASH_CODE
+avg: 11
+

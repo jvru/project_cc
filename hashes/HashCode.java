@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class HashCode { 
     private static Simhash shInstance = new Simhash(new BinaryWordSeg());
     private static Adler32 adlerInstance = new Adler32();
@@ -84,7 +86,7 @@ public class HashCode {
     }
 
     private static int standard(byte[] bytes) {
-        return bytes.hashCode();
+        return Arrays.hashCode(bytes);
     }
 
     private static int whirlpool(byte[] bytes) {
