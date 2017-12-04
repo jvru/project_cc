@@ -16,7 +16,7 @@ public class WordCount {
 
   public static class Text extends org.apache.hadoop.io.Text {
     //TODO to select a has, modify the selectedHash variable
-    private static final HashType selectedHash = HashType.NONE;
+    private static final HashType selectedHash = HashType.MD5;
 
     @Override
     public int hashCode() {
@@ -40,8 +40,8 @@ public class WordCount {
 
   public static class IntSumReducer extends Reducer<Text,IntWritable,Text,IntWritable> {
     private IntWritable result = new IntWritable();
-
     public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+
       int sum = 0;
       for (IntWritable val : values) {
         sum += val.get();
@@ -51,24 +51,37 @@ public class WordCount {
     }
   }
 
-//  public static class CustomPartitioner extends Partitioner<Text, IntWritable> {
-//    public int getPartition(Text key, IntWritable value, int numReduceTasks) {
-//      int hCode = 0;
-//
-//      if(numReduceTasks==0)
-//          return 0;
-//      return hCode % numReduceTasks;
-//    }
-//  }
+  // activate customized partitioner for performance analysis
+  public static class CustomPartitioner extends Partitioner<Text, IntWritable> {
+    public int getPartition(Text key, IntWritable value, int numReduceTasks) {
+      // save hashcode for return
+      int hcode = (key.hashCode() & Integer.MAX_VALUE) % numReduceTasks;
+      // count the number of total records and the number of records each partitioner received
+      RecordCount.total++;
+      RecordCount.partitionNo[hcode]++;
+      // return hash code
+      return hcode;
+    }
+  }
+
+// declare a new class for performance analysis
+public static class RecordCount
+{
+public static int[] partitionNo = {0,0,0,0,0}; // save number of records each partitioner receives
+public static int total = 0; // save total record number
+}
 
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
+
+    
     Job job = Job.getInstance(conf, "word count");
     job.setJarByClass(WordCount.class);
     job.setMapperClass(TokenizerMapper.class);
     job.setCombinerClass(IntSumReducer.class);
     job.setReducerClass(IntSumReducer.class);
-//    job.setPartitionerClass(CustomPartitioner.class);
+    // activate partitioner class
+    job.setPartitionerClass(CustomPartitioner.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(IntWritable.class);
 
@@ -80,6 +93,16 @@ public class WordCount {
     long start = System.currentTimeMillis();
     job.waitForCompletion(true);
     long end = System.currentTimeMillis();
+
+
+
+// print total record number
+System.out.println("Total Records: " + RecordCount.total);
+//print each partitioner's received records
+for(int i=0;i<5;i++)
+{
+    System.out.println("Records in Partition " + i + ": " + RecordCount.partitionNo[i] + " Percentage: "+              (double)RecordCount.partitionNo[i]/(double)RecordCount.total);
+}
 
     System.out.println("Job start: " + start);
     System.out.println("Job end: " + end);
