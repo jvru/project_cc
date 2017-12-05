@@ -53,7 +53,7 @@ public final class JavaPageRank {
   private static class MyString implements Serializable {
     //TODO to select a has, modify the selectedHash variable
     private static final HashType selectedHash = HashType.MD5;
-    String s;    
+    String s;
 
     public MyString(String s) {
       this.s = s;
@@ -68,7 +68,22 @@ public final class JavaPageRank {
 
     @Override
     public int hashCode() {
-        return HashCode.getHash(s.getBytes(), selectedHash);
+      // return HashCode.getHash(s.getBytes(), selectedHash);
+      int hcode = HashCode.getHash(s.getBytes(), selectedHash);
+      // count total record number
+      RecordCount.total++;
+      // get partition number
+      int j = hcode % 5;
+      // if number < 0, process
+      if(j<0)
+      {
+          j+=5;
+      }
+      // count partition's record number
+      RecordCount.partitionNo[j]++;
+      // return hashcode
+      return hcode;
+
 //        return s.hashCode();
     }
 
@@ -84,6 +99,13 @@ public final class JavaPageRank {
             "Please use the PageRank implementation found in " +
             "org.apache.spark.graphx.lib.PageRank for more conventional use.";
     System.err.println(warning);
+  }
+
+// declare a new class for performance analysis
+  public static class RecordCount
+  {
+    public static int[] partitionNo = {0,0,0,0,0}; // save number of records each partitioner receives
+    public static int total = 0; // save total record number
   }
 
   private static class Sum implements Function2<Double, Double, Double> {
@@ -144,7 +166,13 @@ public final class JavaPageRank {
     for (Tuple2<?,?> tuple : output) {
       System.out.println(tuple._1() + " has rank: " + tuple._2() + ".");
     }
-
+    // print total record number
+    System.out.println("Total Records: " + RecordCount.total);
+    //print each partitioner's received records
+    for(int i=0;i<5;i++)
+    {
+      System.out.println("Records in Partition " + i + ": " + RecordCount.partitionNo[i] + " Percentage: " + (double) RecordCount.partitionNo[i] / (double) RecordCount.total);
+    }
     spark.stop();
   }
 }
