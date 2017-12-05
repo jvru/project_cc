@@ -25,7 +25,7 @@ public class WordCount {
   }
 
     public static class TokenizerMapper extends Mapper<Object, org.apache.hadoop.io.Text, Text, IntWritable>{
-   
+
     private final static IntWritable one = new IntWritable(1);
     private Text word = new Text();
 
@@ -64,17 +64,16 @@ public class WordCount {
     }
   }
 
-// declare a new class for performance analysis
-public static class RecordCount
-{
-public static int[] partitionNo = {0,0,0,0,0}; // save number of records each partitioner receives
-public static int total = 0; // save total record number
-}
+  // declare a new class for performance analysis
+  public static class RecordCount
+  {
+    public static int[] partitionNo = {0,0,0,0,0}; // save number of records each partitioner receives
+    public static int total = 0; // save total record number
+  }
 
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
 
-    
     Job job = Job.getInstance(conf, "word count");
     job.setJarByClass(WordCount.class);
     job.setMapperClass(TokenizerMapper.class);
@@ -94,16 +93,13 @@ public static int total = 0; // save total record number
     job.waitForCompletion(true);
     long end = System.currentTimeMillis();
 
-
-
-// print total record number
-System.out.println("Total Records: " + RecordCount.total);
-//print each partitioner's received records
-for(int i=0;i<5;i++)
-{
-    System.out.println("Records in Partition " + i + ": " + RecordCount.partitionNo[i] + " Percentage: "+              (double)RecordCount.partitionNo[i]/(double)RecordCount.total);
-}
-
+    // print total record number
+    System.out.println("Total Records: " + RecordCount.total);
+    //print each partitioner's received records
+    for(int i=0;i<5;i++)
+    {
+      System.out.println("Records in Partition " + i + ": " + RecordCount.partitionNo[i] + " Percentage: "+ (double) RecordCount.partitionNo[i] / (double) RecordCount.total);
+    }
     System.out.println("Job start: " + start);
     System.out.println("Job end: " + end);
     System.out.println("Duration: " + (end - start));

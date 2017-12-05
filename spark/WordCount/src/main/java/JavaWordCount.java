@@ -33,7 +33,7 @@ public final class JavaWordCount {
   private static class MyString implements Serializable {
     //TODO to select a has, modify the selectedHash variable
     private static final HashType selectedHash = HashType.MD5;
-    String s;    
+    String s;
 
     public MyString(String s) {
       this.s = s;
@@ -48,14 +48,33 @@ public final class JavaWordCount {
 
     @Override
     public int hashCode() {
-        return HashCode.getHash(s.getBytes(), selectedHash);
-//        return s.hashCode();
+      int hcode = HashCode.getHash(s.getBytes(), selectedHash);
+      // count total record number
+      RecordCount.total++;
+      // get partition number
+      int j = hcode % 5;
+      // if number < 0, process
+      if(j<0)
+      {
+          j+=5;
+      }
+      // count partition's record number
+      RecordCount.partitionNo[j]++;
+      // return hashcode
+      return hcode;
+      //        return s.hashCode();-
     }
 
     @Override
     public String toString() {
         return s;
     }
+  }
+  // declare a new class for performance analysis
+  public static class RecordCount
+  {
+    public static int[] partitionNo = {0,0,0,0,0}; // save number of records each partitioner receives
+    public static int total = 0; // save total record number
   }
 
   public static void main(String[] args) throws Exception {
@@ -83,6 +102,15 @@ public final class JavaWordCount {
     for (Tuple2<?,?> tuple : output) {
       System.out.println(tuple._1() + ": " + tuple._2());
     }
+
+    // print total record number
+    System.out.println("Total Records: " + RecordCount.total);
+    //print each partitioner's received records
+    for(int i=0;i<5;i++)
+    {
+      System.out.println("Records in Partition " + i + ": " + RecordCount.partitionNo[i] + " Percentage: " + (double) RecordCount.partitionNo[i] / (double) RecordCount.total);
+    }
+
     spark.stop();
   }
 }
