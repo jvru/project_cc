@@ -12,3 +12,4 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 
 *.class
+hadoop/WordCount/.DS_Store
