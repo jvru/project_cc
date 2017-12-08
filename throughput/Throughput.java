@@ -4,6 +4,7 @@ public class Throughput {
     public static void main(String[] args) throws Exception {
         int runs = 10;
         String inputFile = args[0];
+        int hashTimes = Integer.valueOf(args[1]);
         Path path = Paths.get(inputFile);
         byte[] data = Files.readAllBytes(path);
 
@@ -23,10 +24,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -37,10 +40,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -51,10 +56,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -65,10 +72,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -79,10 +88,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -94,10 +105,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -109,10 +122,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -123,10 +138,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -137,10 +154,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -151,10 +170,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -165,10 +186,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -179,10 +202,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -193,10 +218,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
@@ -207,10 +234,12 @@ public class Throughput {
         System.out.println("Running Hash " + type);
         total = 0;
         for(int i = 0; i < runs; i++) {
-            start = System.currentTimeMillis();
-            HashCode.getHash(data, type);  
-            end = System.currentTimeMillis();
-            total += end - start;
+            for (int k = 0; k < hashTimes; k++) {
+                start = System.currentTimeMillis();
+                HashCode.getHash(data, type);  
+                end = System.currentTimeMillis();
+                total += end - start;
+            }
         } 
         avg = total / runs;
         System.out.println("avg: " + avg);
