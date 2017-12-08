@@ -1,5 +1,6 @@
 ################### Steps for building and execution ###########################
 #using spark 2.2.0
+#only the WordCount and PageRank algorithm are used for the analysis
 
 #install maven
 sudo apt install maven

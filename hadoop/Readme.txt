@@ -1,4 +1,5 @@
 #Tested on Hadoop 2.7.4
+#Only the WordCount problem was used for the analysis
 
 ##################### Building and Executing the File #############################
 
