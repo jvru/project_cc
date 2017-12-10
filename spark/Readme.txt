@@ -16,9 +16,9 @@ mvn clean package
 #submit the job from the job folder
 spark-submit --class [PACKAGE_NAME].[ARTIFACT_ID] ./target/[FILENAME_]SNAPSHOT.jar
 
-spark-submit --class JavaWordCount ./target/WordCount-1.0-SNAPSHOT.jar ./input/input
+spark-submit --master local[5] --class JavaWordCount ./target/WordCount-1.0-SNAPSHOT.jar input
 
-spark-submit --class JavaPageRank ./target/PageRank-1.0-SNAPSHOT.jar ./input/pagerank_data.txt 1
+spark-submit --matser -local[5] --class JavaPageRank ./target/PageRank-1.0-SNAPSHOT.jar input 1
 // 1 is iteration time
 
 file iteration
